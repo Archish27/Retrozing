@@ -13,7 +13,7 @@ Retrozing is sample android application which depicts use of Retrofit &amp; Clea
 --------------------
 ### Dependencies ###
 
-* Android Support Tools (recyclerView, cardView, vector, palette,... ) v24.2.1
+* Android Support Tools (recyclerView, cardView) v24.2.1
 * Retrofit2 v2.1.0
 * OkHttp v3.4.1
 * Dagger2 v2.7
