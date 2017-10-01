@@ -3,6 +3,7 @@ package com.markdevelopers.retrozing.ui.widgets;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -11,7 +12,7 @@ import com.markdevelopers.retrozing.R;
 /**
  * Created by Archish on 04/06/2016.
  */
-public class BaseTextView extends TextView {
+public class BaseTextView extends AppCompatTextView {
 
     public BaseTextView(Context context, AttributeSet attrs) {
         super(context, attrs);

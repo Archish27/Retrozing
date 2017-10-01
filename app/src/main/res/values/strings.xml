@@ -7,6 +7,7 @@
     <!-- Custom Fonts -->
     <string name="font_name_montserrat">montserrat</string>
     <string name="font_name_montserrat_bold">montserrat_bold</string>
+    <string name="search">Search</string>
 
 </resources>
 

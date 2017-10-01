@@ -32,15 +32,17 @@ public class MainPresenter implements MainContract.MainPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        if(mainView!=null)
+                        if (mainView != null)
                             mainView.onNetworkException(e);
                     }
 
                     @Override
                     public void onNext(DataWrapper dataWrapper) {
-                        mainView.onData(dataWrapper);
+                        if (mainView != null)
+                            mainView.onData(dataWrapper);
                     }
                 });
     }
+
 
 }

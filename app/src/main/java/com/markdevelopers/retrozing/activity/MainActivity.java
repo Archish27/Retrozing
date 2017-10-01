@@ -2,9 +2,13 @@ package com.markdevelopers.retrozing.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.markdevelopers.retrozing.R;
 import com.markdevelopers.retrozing.adapter.MainAdapter;
@@ -14,11 +18,15 @@ import com.markdevelopers.retrozing.data.remote.models.DataModel;
 import com.markdevelopers.retrozing.data.remote.models.DataWrapper;
 import com.markdevelopers.retrozing.data.repository.DataRepository;
 
-public class MainActivity extends BaseActivity implements MainContract.MainView, MainAdapter.ItemUpdateListener {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends BaseActivity implements MainContract.MainView,SearchView.OnQueryTextListener, MainAdapter.ItemUpdateListener {
     MainPresenter mainPresenter;
     RecyclerView rvData;
     SwipeRefreshLayout swlData;
-
+    MainAdapter mainAdapter;
+    ArrayList<DataModel> allData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +35,18 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         DataRepository dataRepository = ((RetrozingApp) getApplication()).getComponent().dataRepository();
         mainPresenter = new MainPresenter(dataRepository, this);
         mainPresenter.fetchData();
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_mainactivity, menu);
+
+        final MenuItem item = menu.findItem(R.id.action_search);//Menu Resource, Menu
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(this);
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void initViews() {
@@ -50,7 +70,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
     }
 
     private void populateView(DataWrapper dataWrapper) {
-        MainAdapter mainAdapter = new MainAdapter(dataWrapper.data, this);
+        mainAdapter = new MainAdapter(dataWrapper.data, this);
+        allData = dataWrapper.data;
         rvData.setAdapter(mainAdapter);
     }
 
@@ -60,4 +81,36 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         i.putExtra("DataModel", dataModel);
         startActivity(i);
     }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+
+        return true;
+    }
+
+
+    private List<DataModel> filter(List<DataModel> models, String query) {
+        query = query.toLowerCase();
+
+        final List<DataModel> filteredModelList = new ArrayList<>();
+        for (DataModel model : models) {
+            String s = model.getName();
+            final String text = s.toLowerCase();
+            if (text.contains(query)) {
+                filteredModelList.add(model);
+            }
+        }
+        return filteredModelList;
+    }
+
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        final List<DataModel> filteredModelList = filter(allData, newText);
+        mainAdapter.animateTo(filteredModelList);
+        rvData.scrollToPosition(0);
+        return false;
+    }
+
+
 }
